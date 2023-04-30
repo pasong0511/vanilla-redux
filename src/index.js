@@ -17,12 +17,18 @@ const reducer = (state = 0, action) => {
 };
 
 const store = createStore(reducer);
-store.dispatch({ type: "ADD" });
-store.dispatch({ type: "ADD" });
-store.dispatch({ type: "ADD" });
+const onChange = () => {
+    console.log("변화하는 state", store.getState());
+    number.innerText = store.getState();
+};
+//store를 구독하고있음
+store.subscribe(onChange);
 
-console.log(store.getState());
+const handleMinus = () => {
+    store.dispatch({ type: "MINUS" });
+};
 
-store.dispatch({ type: "MINUS" });
-
-console.log(store.getState());
+//바로 넘기기
+add.addEventListener("click", () => store.dispatch({ type: "ADD" }));
+//함수로 만들기
+minus.addEventListener("click", handleMinus);
