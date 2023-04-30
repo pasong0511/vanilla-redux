@@ -2,8 +2,6 @@
 
 
 
-
-
 ## 🔨 기본 용어
 
 * store: Data 를 담는 저장소 
@@ -95,9 +93,8 @@ console.log(store.getState());
   ```
 
 
+
 ## 🔨 Action
-
-
 
 * action : redux에서 function을 부를때 사용하는 두번째 파라미터
 
@@ -217,70 +214,66 @@ console.log(store.getState());
 
 ## 🔨 subscribe
 
-
-
 * subscribe : store안에 있는 변화를 알수 있다.
+* store를 구독하므로써 store안의 변화를 감지할 수 있다
 
-* store를 구독하므로써 store안의 변화를 감지할 수 있다.
-
-  ```
-  import { createStore } from "redux";
-  
-  const add = document.getElementById("add");
-  const minus = document.getElementById("minus");
-  const number = document.querySelector("span");
-  
-  const reducer = (state = 0, action) => {
-      console.log(state, action);
-  
-      if (action.type === "ADD") {
-          return state + 1;
-      } else if (action.type === "MINUS") {
-          return state - 1;
-      }
-  
-      return state;
-  };
-  
-  const store = createStore(reducer);
-  const onChange = () => {
-      console.log("📞 스토어가 변하구 있다구!");
-  };
-  //store를 구독하고있음
-  store.subscribe(onChange);
-  
-  const handleMinus = () => {
-      console.log("TEST");
-      store.dispatch({ type: "MINUS" });
-  };
-  
-  //바로 넘기기
-  add.addEventListener("click", () => store.dispatch({ type: "ADD" }));
-  //함수로 만들기
-  minus.addEventListener("click", handleMinus);
-  
-  ```
-
-  ![1682846272965](./assets/1682846272965.png)
-
-  * ```
-    const store = createStore(reducer);
-    const onChange = () => {
-        console.log("📞 스토어가 변하구 있다구!");
-    };
-    //store를 구독하고있음
-    store.subscribe(onChange);
-    ```
-
-  * 변경사항에 대한 리스너를 추가한다.
-
-  * 리스너는 action이 보내져서 state가 변경될 때마다 호출된다.
-
-  * 콜백 안에서 현재 state를 읽으려면 .getState()를 호출한다.
+```
+const store = createStore(reducer);
+const onChange = () => {
+    console.log("변화하는 state", store.getState());
+    number.innerText = store.getState();
+};
+//store를 구독하고있음
+store.subscribe(onChange);
+```
 
 
 
+```
+import { createStore } from "redux";
 
+const add = document.getElementById("add");
+const minus = document.getElementById("minus");
+const number = document.querySelector("span");
+
+const reducer = (state = 0, action) => {
+    console.log(state, action);
+
+    if (action.type === "ADD") {
+        return state + 1;
+    } else if (action.type === "MINUS") {
+        return state - 1;
+    }
+
+    return state;
+};
+
+const store = createStore(reducer);
+const onChange = () => {
+    console.log("📞 스토어가 변하구 있다구!");
+};
+//store를 구독하고있음
+store.subscribe(onChange);
+
+const handleMinus = () => {
+    console.log("TEST");
+    store.dispatch({ type: "MINUS" });
+};
+
+//바로 넘기기
+add.addEventListener("click", () => store.dispatch({ type: "ADD" }));
+//함수로 만들기
+minus.addEventListener("click", handleMinus);
+
+```
+
+![1682846272965](./assets/1682846272965.png)
+
+
+
+* 변경사항에 대한 리스너를 추가한다.
+* 리스너는 action이 보내져서 state가 변경될 때마다 호출된다.
+* 콜백 안에서 현재 state를 읽으려면 .getState()를 호출한다.
 
 ```
 import { createStore } from "redux";
@@ -323,3 +316,51 @@ minus.addEventListener("click", handleMinus);
 
 
 ![1682846671901](./assets/1682846671901.png)
+
+* 보통 reducer 함수에 switch case 구문을 많이 사용한다.
+
+* action에서 사용하는 type은 변수로 지정하는게 관리하게 편하다.
+
+  ```
+  import { createStore } from "redux";
+  
+  const add = document.getElementById("add");
+  const minus = document.getElementById("minus");
+  const number = document.querySelector("span");
+  
+  number.innerText = 0;
+  
+  const ADD = "ADD";
+  const MINUS = "MINUS";
+  
+  const reducer = (state = 0, action) => {
+      console.log(state, action);
+  
+      switch (action.type) {
+          case ADD:
+              return state + 1;
+          case MINUS:
+              return state - 1;
+          default:
+              return state;
+      }
+  };
+  
+  const store = createStore(reducer);
+  const onChange = () => {
+      console.log("변화하는 state", store.getState());
+      number.innerText = store.getState();
+  };
+  //store를 구독하고있음
+  store.subscribe(onChange);
+  
+  const handleMinus = () => {
+      store.dispatch({ type: MINUS });
+  };
+  
+  //바로 넘기기
+  add.addEventListener("click", () => store.dispatch({ type: ADD }));
+  //함수로 만들기
+  minus.addEventListener("click", handleMinus);
+  
+  ```
