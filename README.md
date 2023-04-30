@@ -57,7 +57,7 @@ console.log(store);
 * store가 갖고있는 것은 함수를 갖고있다.
   * dispatch(), getState(), replaceReducer(), subscribe()
 
-![1682842274538](E:\projects\[react]\리덕스\vanilla-redux\assets\1682842274538.png)
+![1682842274538](assets\1682842274538.png)
 
 
 
@@ -73,7 +73,7 @@ const store = createStore(reducer);
 console.log(store.getState());
 ```
 
-![1682842462760](E:\projects\[react]\리덕스\vanilla-redux\assets\1682842462760.png)
+![1682842462760](assets\1682842462760.png)
 
 
 
@@ -114,7 +114,7 @@ console.log(store.getState());
   const store = createStore(reducer);
   ```
 
-  ![1682843431511](E:\projects\[react]\리덕스\vanilla-redux\assets\1682843431511.png)
+  ![1682843431511](assets\1682843431511.png)
 
 
 
@@ -131,7 +131,7 @@ console.log(store.getState());
   
   ```
 
-  ![1682843746452](E:\projects\[react]\리덕스\vanilla-redux\assets\1682843746452.png)
+  ![1682843746452](assets\1682843746452.png)
 
 
 
@@ -153,7 +153,7 @@ console.log(store.getState());
   
   ```
 
-![1682844136565](E:\projects\[react]\리덕스\vanilla-redux\assets\1682844136565.png)
+![1682844136565](assets\1682844136565.png)
 
 
 
@@ -179,7 +179,7 @@ console.log(store.getState());
   console.log(store.getState());
   ```
 
-![1682844336159](E:\projects\[react]\리덕스\vanilla-redux\assets\1682844336159.png)
+![1682844336159](assets\1682844336159.png)
 
 
 
@@ -211,4 +211,4 @@ console.log(store.getState());
   console.log(store.getState());
   ```
 
-![1682844534396](E:\projects\[react]\리덕스\vanilla-redux\assets\1682844534396.png)
+![1682844534396](assets/1682844534396.png)
