@@ -1,40 +1,83 @@
 import { createStore } from "redux";
 
-const add = document.getElementById("add");
-const minus = document.getElementById("minus");
-const number = document.querySelector("span");
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const ul = document.querySelector("ul");
 
-number.innerText = 0;
+//Action
+const ADD_TODO = "ADD_TODO";
+const DELETE_TODO = "DELETE_TODO";
 
-const ADD = "ADD";
-const MINUS = "MINUS";
+//action 메시지 빼기(중복 줄이기)
+const addTodo = (text) => {
+    return {
+        type: ADD_TODO,
+        text,
+    };
+};
 
-const reducer = (state = 0, action) => {
-    console.log(state, action);
+const deleteTodo = (id) => {
+    return {
+        type: DELETE_TODO,
+        id,
+    };
+};
+
+//Reducer
+const reducer = (state = [], action) => {
+    console.log(action);
 
     switch (action.type) {
-        case ADD:
-            return state + 1;
-        case MINUS:
-            return state - 1;
+        case ADD_TODO:
+            //앞에 두면, 맨 앞에 생김
+            return [{ text: action.text, id: Date.now() }, ...state];
+        case DELETE_TODO:
+            return state.filter((todo) => todo.id !== parseInt(action.id));
         default:
             return state;
     }
 };
 
 const store = createStore(reducer);
-const onChange = () => {
-    console.log("변화하는 state", store.getState());
-    number.innerText = store.getState();
-};
-//store를 구독하고있음
-store.subscribe(onChange);
+store.subscribe(() => console.log(store.getState()));
 
-const handleMinus = () => {
-    store.dispatch({ type: MINUS });
+const dispatchAddTodo = (text) => {
+    store.dispatch(addTodo(text));
 };
 
-//바로 넘기기
-add.addEventListener("click", () => store.dispatch({ type: ADD }));
-//함수로 만들기
-minus.addEventListener("click", handleMinus);
+const dispatchDeleteTodo = (e) => {
+    const id = parseInt(e.target.parentNode.id);
+    store.dispatch(deleteTodo(id));
+};
+
+const paintTodos = () => {
+    const toDos = store.getState();
+
+    ul.innerHTML = "";
+
+    toDos.forEach((toDo) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+
+        btn.innerText = "삭제";
+        btn.addEventListener("click", dispatchDeleteTodo);
+
+        li.id = toDo.id;
+        li.innerText = toDo.text;
+
+        li.appendChild(btn);
+        ul.appendChild(li);
+    });
+};
+
+//삭제를 위해서 다시 그려줘야한다.
+store.subscribe(paintTodos);
+
+const onSubmit = (e) => {
+    e.preventDefault();
+    const toDo = input.value;
+    input.value = "";
+    dispatchAddTodo(toDo);
+};
+
+form.addEventListener("submit", onSubmit);

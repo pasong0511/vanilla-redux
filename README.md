@@ -364,3 +364,166 @@ minus.addEventListener("click", handleMinus);
   minus.addEventListener("click", handleMinus);
   
   ```
+
+
+
+## 🔨 Todo List 만들기
+
+### 추가
+
+* state를 mutate 하면 절대 안된다!
+
+  * mutating state하는 대신에 new state objects를 리턴해야 한다.
+
+    * 원본 값을 직접 변경하지 않는다.
+
+    ```
+    switch (action.type) {
+            case ADD_TODO:
+                return state.push({ text: action.text, id: Date.now() });
+    ```
+
+
+
+    * 전개 연산자를 이용해서 새로운 객체를 만들어야한다.
+
+    ```
+    switch (action.type) {
+            case ADD_TODO:
+                return [...state, { text: action.text, id: Date.now() }];
+    ```
+
+
+```javascript
+import { createStore } from "redux";
+
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const ul = document.querySelector("ul");
+
+//Action
+const ADD_TODO = "ADD_TODO";
+const DELETE_TODO = "DELETE_TODO";
+
+//Reducer
+const reducer = (state = [], action) => {
+    console.log(action);
+
+    switch (action.type) {
+        case ADD_TODO:
+            return [...state, { text: action.text, id: Date.now() }];
+        case DELETE_TODO:
+            return [];
+        default:
+            return state;
+    }
+};
+
+const store = createStore(reducer);
+store.subscribe(() => console.log(store.getState()));
+
+const onSubmit = (e) => {
+    e.preventDefault();
+    const toDo = input.value;
+    input.value = "";
+    store.dispatch({ type: ADD_TODO, text: toDo });
+};
+
+form.addEventListener("submit", onSubmit);
+
+```
+
+
+
+### 삭제
+
+* 삭제를 위해서 filter를 시용
+  * filter를 이용해서 새로운 배열을 만든다.
+* addTodo, deleteTodo는 그냥 따로 뺀거임
+
+```h
+import { createStore } from "redux";
+
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const ul = document.querySelector("ul");
+
+//Action
+const ADD_TODO = "ADD_TODO";
+const DELETE_TODO = "DELETE_TODO";
+
+//action 메시지 빼기(중복 줄이기)
+const addTodo = (text) => {
+    return {
+        type: ADD_TODO,
+        text,
+    };
+};
+
+const deleteTodo = (id) => {
+    return {
+        type: DELETE_TODO,
+        id,
+    };
+};
+
+//Reducer
+const reducer = (state = [], action) => {
+    console.log(action);
+
+    switch (action.type) {
+        case ADD_TODO:
+            //앞에 두면, 맨 앞에 생김
+            return [{ text: action.text, id: Date.now() }, ...state];
+        case DELETE_TODO:
+            return state.filter((todo) => todo.id !== parseInt(action.id));
+        default:
+            return state;
+    }
+};
+
+const store = createStore(reducer);
+store.subscribe(() => console.log(store.getState()));
+
+const dispatchAddTodo = (text) => {
+    store.dispatch(addTodo(text));
+};
+
+const dispatchDeleteTodo = (e) => {
+    const id = parseInt(e.target.parentNode.id);
+    store.dispatch(deleteTodo(id));
+};
+
+const paintTodos = () => {
+    const toDos = store.getState();
+
+    ul.innerHTML = "";
+
+    toDos.forEach((toDo) => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+
+        btn.innerText = "삭제";
+        btn.addEventListener("click", dispatchDeleteTodo);
+
+        li.id = toDo.id;
+        li.innerText = toDo.text;
+
+        li.appendChild(btn);
+        ul.appendChild(li);
+    });
+};
+
+//삭제를 위해서 다시 그려줘야한다.
+store.subscribe(paintTodos);
+
+const onSubmit = (e) => {
+    e.preventDefault();
+    const toDo = input.value;
+    input.value = "";
+    dispatchAddTodo(toDo);
+};
+
+form.addEventListener("submit", onSubmit);
+```
+
