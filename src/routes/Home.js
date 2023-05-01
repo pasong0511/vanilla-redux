@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { actionCreators } from "./store";
 
-function Home(props) {
-    console.log("HOME 컴포넌트의 props", props.toDos);
-
+function Home({ toDos, addTodo }) {
     const [text, setText] = useState("");
     function onChange(e) {
         setText(e.target.value);
     }
     function onSubmit(e) {
         e.preventDefault();
+        addTodo(text);
         setText("");
     }
     return (
@@ -19,7 +19,7 @@ function Home(props) {
                 <input type="text" value={text} onChange={onChange} />
                 <button>Add</button>
             </form>
-            <ul></ul>
+            <ul>{JSON.stringify(toDos)}</ul>
         </>
     );
 }
@@ -31,4 +31,8 @@ function mapStateToProps(state, ownProps) {
     return { toDos: state };
 }
 
-export default connect(mapStateToProps)(Home);
+function mapDispatchToProps(dispatch, ownProps) {
+    return { addTodo: (text) => dispatch(actionCreators.addTodo(text)) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

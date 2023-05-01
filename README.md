@@ -795,3 +795,154 @@ export default connect(mapStateToProps)(Home);
 
 ```
 
+
+
+
+
+## 🔨 mapDispatchToProps
+
+
+
+* props의 dispatch 함수도 컴포넌트에서 넘겨받을 수 있다.
+
+  ```
+  import React, { useState } from "react";
+  import { connect } from "react-redux";
+  
+  function Home(props) {
+      console.log("HOME 컴포넌트의 props", props.toDos);
+      console.log("HOME 컴포넌트의 dispatch", props.dispatch);
+  
+      const [text, setText] = useState("");
+      function onChange(e) {
+          setText(e.target.value);
+      }
+      function onSubmit(e) {
+          e.preventDefault();
+          setText("");
+      }
+      return (
+          <>
+              <h1>To Do</h1>
+              <form onSubmit={onSubmit}>
+                  <input type="text" value={text} onChange={onChange} />
+                  <button>Add</button>
+              </form>
+              <ul></ul>
+          </>
+      );
+  }
+  
+  function mapStateToProps(state, ownProps) {
+      console.log(state, ownProps);
+  
+      //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+      return { toDos: state };
+  }
+  
+  function mapDispatchToProps(dispatch, ownProps) {
+      console.log(dispatch);
+  
+      return { dispatch };	//객체로 넘겨줘야한다.
+  }
+  
+  //두번째로 넘겨주는게 dispatch 함수
+  export default connect(mapStateToProps, mapDispatchToProps)(Home);
+  ```
+
+
+* props가history, location, match, addToDo를 갖고있다.
+  * dispatch를 Home 컴포넌트에서 사용하지않는다.
+  * addTodo 함수를 만들어서 dispatch에 전달한다.
+
+```
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { actionCreators } from "./store";
+
+function Home({ toDos, ...rest }) {
+    console.log(rest);
+
+    const [text, setText] = useState("");
+    function onChange(e) {
+        setText(e.target.value);
+    }
+    function onSubmit(e) {
+        e.preventDefault();
+        setText("");
+    }
+    return (
+        <>
+            <h1>To Do</h1>
+            <form onSubmit={onSubmit}>
+                <input type="text" value={text} onChange={onChange} />
+                <button>Add</button>
+            </form>
+            <ul></ul>
+        </>
+    );
+}
+
+function mapStateToProps(state, ownProps) {
+    console.log(state, ownProps);
+
+    //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+    return { toDos: state };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+    return { addTodo: (text) => dispatch(actionCreators.addTodo(text)) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+```
+
+![1682962230692](assets/1682962230692.png)
+
+
+
+* reducer에게 dispach를 잘 하게된다.
+
+```
+import React, { useState } from "react";
+import { connect } from "react-redux";
+import { actionCreators } from "./store";
+
+function Home({ toDos, addTodo }) {
+    const [text, setText] = useState("");
+    function onChange(e) {
+        setText(e.target.value);
+    }
+    function onSubmit(e) {
+        e.preventDefault();
+        addTodo(text);
+        setText("");
+    }
+    return (
+        <>
+            <h1>To Do</h1>
+            <form onSubmit={onSubmit}>
+                <input type="text" value={text} onChange={onChange} />
+                <button>Add</button>
+            </form>
+            <ul>{JSON.stringify(toDos)}</ul>
+        </>
+    );
+}
+
+function mapStateToProps(state, ownProps) {
+    console.log(state, ownProps);
+
+    //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+    return { toDos: state };
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+    return { addTodo: (text) => dispatch(actionCreators.addTodo(text)) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+```
+
