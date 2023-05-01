@@ -535,7 +535,7 @@ form.addEventListener("submit", onSubmit);
 
 
 
-## Provider
+## 🔨 Provider
 
 
 
@@ -601,4 +601,197 @@ form.addEventListener("submit", onSubmit);
   export default store;
   
   ```
+
+
+
+## 🔨 connect
+
+* 컴포넌트들을 store에 연결시켜준다.
+* connect는 두개의 파라미터를 갖는다.
+  * state 또는 dispatch
+
+
+
+* getCurrentState 함수를 만들고 connect로 감싼다.
+
+* ```
+  import React, { useState } from "react";
+  import { connect } from "react-redux";
+  
+  function Home() {
+      const [text, setText] = useState("");
+      function onChange(e) {
+          setText(e.target.value);
+      }
+      function onSubmit(e) {
+          e.preventDefault();
+          setText("");
+      }
+      return (
+          <>
+              <h1>To Do</h1>
+              <form onSubmit={onSubmit}>
+                  <input type="text" value={text} onChange={onChange} />
+                  <button>Add</button>
+              </form>
+              <ul></ul>
+          </>
+      );
+  }
+  
+  function getCurrentState(state, ownProps) {
+      console.log(state, ownProps);
+  }
+  
+  export default connect(getCurrentState)(Home);
+  
+  ```
+
+
+
+* getCurrentState 함수에서 넘어온 state, ownProps를 출력해보자
+  * 첫번째 state는 Redux store에서 온 state
+  * 두번째 ownProps는 컴포넌트의 props로 react-router에 의해서 주어짐
+
+![1682960377431](assets/1682960377431.png)
+
+
+
+
+
+* connect()는 Home 컴포넌트로 보내는 props에 프로퍼티를 추가될 수 있도록 허용해준다
+  * getCurrentState() 함수에서 return 해준 프로퍼티가 Home 컴포넌트의 props로 전달된다.
+  * 이것도 react-router에 의해서 전달된다.
+
+```
+import React, { useState } from "react";
+import { connect } from "react-redux";
+
+function Home(props) {
+    console.log("HOME 컴포넌트의 props", props);
+
+    const [text, setText] = useState("");
+    function onChange(e) {
+        setText(e.target.value);
+    }
+    function onSubmit(e) {
+        e.preventDefault();
+        setText("");
+    }
+    return (
+        <>
+            <h1>To Do</h1>
+            <form onSubmit={onSubmit}>
+                <input type="text" value={text} onChange={onChange} />
+                <button>Add</button>
+            </form>
+            <ul></ul>
+        </>
+    );
+}
+
+function getCurrentState(state, ownProps) {
+    console.log(state, ownProps);
+
+    //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+    return { sexy: true };
+}
+
+export default connect(getCurrentState)(Home);
+
+```
+
+
+
+![1682960764378](assets/1682960764378.png)
+
+
+
+* state 값을 return 해준다면 컴포넌트에 sotre에 있는 state도 전달 가능하다.
+
+  ```javascript
+  import React, { useState } from "react";
+  import { connect } from "react-redux";
+  
+  function Home(props) {
+      console.log("HOME 컴포넌트의 props", props);
+  
+      const [text, setText] = useState("");
+      function onChange(e) {
+          setText(e.target.value);
+      }
+      function onSubmit(e) {
+          e.preventDefault();
+          setText("");
+      }
+      return (
+          <>
+              <h1>To Do</h1>
+              <form onSubmit={onSubmit}>
+                  <input type="text" value={text} onChange={onChange} />
+                  <button>Add</button>
+              </form>
+              <ul></ul>
+          </>
+      );
+  }
+  
+  function getCurrentState(state, ownProps) {
+      console.log(state, ownProps);
+  
+      //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+      return { toDos: state };
+  }
+  
+  export default connect(getCurrentState)(Home);
+  
+  ```
+
+  ![1682961054255](assets/1682961054255.png)
+
+
+
+## 🔨 mapStateToProps
+
+* 이름이 기본적으로 mapStateToProps() 이거여야 한다.
+  * 리덕스 공식문서에 나와있음!
+  * Redux state로부터 Home(component)에 props로 전달한다는 뜻
+
+```
+import React, { useState } from "react";
+import { connect } from "react-redux";
+
+function Home(props) {
+    console.log("HOME 컴포넌트의 props", props);
+
+    const [text, setText] = useState("");
+    function onChange(e) {
+        setText(e.target.value);
+    }
+    function onSubmit(e) {
+        e.preventDefault();
+        setText("");
+    }
+    return (
+        <>
+            <h1>To Do</h1>
+            <form onSubmit={onSubmit}>
+                <input type="text" value={text} onChange={onChange} />
+                <button>Add</button>
+            </form>
+            <ul></ul>
+        </>
+    );
+}
+
+function mapStateToProps(state, ownProps) {
+    console.log(state, ownProps);
+
+    //여기에 return 해서 넣어주면 HOME props의 프로퍼티로 넘어감
+    return { toDos: state };
+}
+
+export default connect(mapStateToProps)(Home);
+
+```
 
