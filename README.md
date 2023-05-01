@@ -386,7 +386,7 @@ minus.addEventListener("click", handleMinus);
 
 
     * 전개 연산자를 이용해서 새로운 객체를 만들어야한다.
-
+    
     ```
     switch (action.type) {
             case ADD_TODO:
@@ -526,4 +526,79 @@ const onSubmit = (e) => {
 
 form.addEventListener("submit", onSubmit);
 ```
+
+
+
+
+
+# 리액트 리덕스
+
+
+
+## Provider
+
+
+
+* React Redux에는 Provider컴포넌트를 통해 앱의 다른 컴포넌트에서 Redux store를 사용할 수 있음
+
+  ```
+  💾 index.js
+  
+  import React from "react";
+  import ReactDOM from "react-dom";
+  import { Provider } from "react-redux";
+  import App from "./components/App";
+  import store from "./routes/store";
+  
+  ReactDOM.render(
+      <Provider store={store}>
+          <App />
+      </Provider>,
+      document.getElementById("root")
+  );
+  
+  ```
+
+
+
+* sotore 파일은 별도로 만들어 줬다.
+
+  ```
+  💾 sotore.js
+  
+  import { createStore } from "redux";
+  
+  const ADD = "ADD";
+  const DELETE = "DELETE";
+  
+  export const addTodo = (text) => {
+      return {
+          type: ADD,
+          text,
+      };
+  };
+  
+  export const deleteDoto = (id) => {
+      return {
+          type: DELETE,
+          id,
+      };
+  };
+  
+  const reducer = (state = [], action) => {
+      switch (action.type) {
+          case ADD:
+              return [{ text: action.text, id: Date.now() }, ...state];
+          case DELETE:
+              return state.filter((toDo) => toDo !== action.id);
+          default:
+              return state;
+      }
+  };
+  
+  const store = createStore(reducer);
+  
+  export default store;
+  
+  ```
 
