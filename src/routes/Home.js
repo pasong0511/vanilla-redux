@@ -14,7 +14,7 @@ function Home({ toDos, addTodo }) {
         setText("");
     }
 
-    console.log("todo", toDos);
+    //console.log("todo", toDos);
 
     return (
         <>

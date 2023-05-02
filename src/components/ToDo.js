@@ -1,19 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { actionCreators } from "../routes/store";
 
-function ToDo({ text, onBtnClick }) {
+function ToDo({ text, id, onBtnClick }) {
     return (
         <li>
-            {text}
-            <button onClick={onBtnClick}>삭제</button>
+            <Link to={`/${id}`}>
+                {text}
+                <button onClick={onBtnClick}>삭제</button>
+            </Link>
         </li>
     );
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
-    console.log("온프롭", ownProps);
-    console.log("온프롭", ownProps.id);
+    // console.log("온프롭", ownProps);
+    // console.log("온프롭", ownProps.id);
 
     return {
         //여기서 함수를 정의하는 것이다.
