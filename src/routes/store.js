@@ -10,10 +10,10 @@ const addTodo = (text) => {
     };
 };
 
-const deleteDoto = (id) => {
+const deleteToto = (id) => {
     return {
         type: DELETE,
-        id,
+        id: parseInt(id),
     };
 };
 
@@ -22,7 +22,7 @@ const reducer = (state = [], action) => {
         case ADD:
             return [{ text: action.text, id: Date.now() }, ...state];
         case DELETE:
-            return state.filter((toDo) => toDo !== action.id);
+            return state.filter((toDo) => toDo.id !== action.id);
         default:
             return state;
     }
@@ -32,7 +32,7 @@ const store = createStore(reducer);
 
 export const actionCreators = {
     addTodo,
-    deleteDoto,
+    deleteToto,
 };
 
 export default store;
